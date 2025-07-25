@@ -2,7 +2,6 @@ streamlit
 numpy
 pandas
 geopy
-io
+geographiclib
 python-docx
 reportlab
-re
