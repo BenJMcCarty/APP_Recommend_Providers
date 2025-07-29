@@ -99,17 +99,12 @@ if 'Preferred' not in provider_df.columns:
 LD_API_KEY = st.secrets.get('lead_docket_api_key', None)
 LD_API_ENDPOINT = st.secrets.get('lead_docket_base_api_endpoint', None)
 
-def call_external_api(payload):
-    """Placeholder for making an API call using the stored API key and endpoint."""
-    if not LD_API_KEY or not LD_API_ENDPOINT:
-        st.warning('API key or endpoint not set in secrets. Please update .streamlit/secrets.toml.')
-        return None
-    # Example usage (requests must be imported if used):
-    # import requests
-    # headers = {"Authorization": f"Bearer {API_KEY}"}
-    # response = requests.post(API_ENDPOINT, json=payload, headers=headers)
-    # return response.json()
-    return None  # Placeholder
+# def call_external_api(payload):
+#     """Placeholder for making an API call using the stored API key and endpoint."""
+#     if not LD_API_KEY or not LD_API_ENDPOINT:
+#         st.warning('API key or endpoint not set in secrets. Please update .streamlit/secrets.toml.')
+#         return None
+#     return None  # Placeholder
 
 # --- Streamlit Page Config ---
 st.set_page_config(page_title="Provider Recommender", page_icon=":hospital:", layout="wide")
@@ -120,9 +115,8 @@ st.markdown("<h1>Provider Recommender for New Clients</h1>", unsafe_allow_html=T
 # --- Tabs for Main Content ---
 tabs = st.tabs(["Find Provider", "How Selection Works"])
 
-# --- Sidebar Logo and Title ---
-st.sidebar.image('jlg_logo.svg', width=100)
-st.sidebar.markdown("<h2 style='font-weight: bold; margin-bottom: 0.5em;'>Jaklitsch Law Group</h2>", unsafe_allow_html=True)
+# --- Sidebar and Title ---
+st.sidebar.markdown("<h2 style='font-weight: bold; margin-bottom: 0.5em;'>Provider Recommender</h2>", unsafe_allow_html=True)
 # --- Instructions in Sidebar ---
 st.sidebar.markdown("""
 # Instructions:
