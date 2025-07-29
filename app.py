@@ -64,8 +64,8 @@ def calculate_distances(user_lat, user_lon, provider_df):
     return distances
 
 # --- Data Loading ---
-def load_provider_data():
-    df = pd.read_excel('data/Ranked_Contacts.xlsx')
+def load_provider_data(filepath = 'data/Ranked_Contacts.xlsx'):
+    df = pd.read_excel(filepath).head(10)
     df.columns = [col.strip() for col in df.columns]
     df['Address 1 Zip'] = df['Address 1 Zip'].apply(lambda x: str(int(x)) if pd.notnull(x) else '')
     df['Full Address'] = (
@@ -245,7 +245,7 @@ with tabs[0]:
                 if best.get('Preferred', 0) == 1:
                     st.markdown(f"<span style='color: green; font-weight: bold;'>✅ Preferred Provider</span>", unsafe_allow_html=True)
                 st.write('Top 5 providers by blended score:')
-                required_cols = ['Full Name', 'Full Address', 'Distance (miles)', 'Rank', 'score', 'Preferred']
+                required_cols = ['Full Name', 'Full Address', 'Distance (miles)', 'Provider Rank', 'score', 'Preferred']
                 if isinstance(scored_df, pd.DataFrame) and all(col in scored_df.columns for col in required_cols):
                     st.dataframe(scored_df[required_cols].sort_values(by='score').head())
                 # --- Export Buttons ---
@@ -304,7 +304,7 @@ with tabs[0]:
                 #     data=pdf_bytes,
                 #     file_name=f"{base_filename}.pdf",
                 #     mime="application/pdf"
-                )
+                # )
                 # --- Rationale for Selection ---
                 with st.expander('Why was this provider selected?', expanded=False):
                     rationale = []
@@ -317,7 +317,7 @@ with tabs[0]:
                     rationale.append(f"")
                     rationale.append(f"* Selected specialty is **{best['Specialty']}**.")
                     rationale.append(f"")
-                    rationale.append(f"* Provider's rank is **{best['Rank']}** (lower is better).")
+                    rationale.append(f"* Provider's rank is **{best['Provider Rank']}** (lower is better).")
                     rationale.append(f"")
                     rationale.append(f"The final score is a blend of normalized rank and distance, using your chosen weights: **Rank weight = {alpha_disp:.2f}**, **Distance weight = {beta_disp:.2f}**.")
                     rationale.append(f"The provider with the lowest blended score was recommended.")
