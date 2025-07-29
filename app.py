@@ -15,14 +15,14 @@ import re
 def recommend_provider(provider_df, alpha=0.5, beta=0.5):
     """Return the best provider and scored DataFrame, prioritizing preferred providers, then lowest blended score."""
     df = provider_df.copy()
-    df = df[df['Distance (miles)'].notnull() & df['Rank'].notnull()]
+    df = df[df['Distance (miles)'].notnull() & df['Provider Rank'].notnull()]
     if df.empty:
         return None, None
     # Prioritize preferred providers: filter to preferred if any exist
     preferred_df = df[df['Preferred'] == 1]
     if not preferred_df.empty:
         df = preferred_df
-    df['norm_rank'] = (df['Rank'] - df['Rank'].min()) / (df['Rank'].max() - df['Rank'].min())
+    df['norm_rank'] = (df['Provider Rank'] - df['Provider Rank'].min()) / (df['Provider Rank'].max() - df['Provider Rank'].min())
     df['norm_dist'] = (df['Distance (miles)'] - df['Distance (miles)'].min()) / (df['Distance (miles)'].max() - df['Distance (miles)'].min())
     df['score'] = alpha * df['norm_rank'] + beta * df['norm_dist']
     best = df.sort_values(by='score').iloc[0]
@@ -124,7 +124,7 @@ st.sidebar.markdown("""
 2. Enter the client's address and preferences.<br>
 3. Select a provider specialty if needed.<br>
 4. Choose how to balance provider quality and proximity.<br>
-5. Click <b>Find Best Provider</b> to get a recommendation. The app prioritizes the law firm's preferred providers, then considers proximity and ranking.<br>
+5. Click <b>Find Best Provider</b> to get a recommendation. The app prioritizes preferred providers, then considers proximity and ranking.<br>
 6. The final result is contact information to direct the client to the best provider.
 """, unsafe_allow_html=True)
 
@@ -308,7 +308,7 @@ with tabs[0]:
                 with st.expander('Why was this provider selected?', expanded=False):
                     rationale = []
                     if best.get('Preferred', 0) == 1:
-                        rationale.append('This provider is a **Preferred Provider** for the law firm, which means they are trusted and have a strong track record with our clients.')
+                        rationale.append('This provider is a **Preferred Provider**, which means they are trusted and have a strong track record with our clients.')
                     else:
                         rationale.append('This provider is not marked as preferred, but was selected based on a balance of proximity and ranking.')
                     rationale.append(f"")
@@ -329,8 +329,8 @@ with tabs[1]:
     # --- High-Level Overview of Selection Process ---
     st.markdown("""
     ### How Provider Selection Works
-    - This app is designed for personal injury law firms to help new clients identify healthcare providers.
-    - The law firm's **preferred providers** are prioritized in recommendations.
+    - This app is designed for personal injury law firms to help recommend healthcare providers to new clients.
+    - The **preferred providers** are prioritized in recommendations.
     - **Step 1:** The client's address is geocoded (converted to latitude/longitude). If the full address fails, the app tries less specific versions (street only, city/state, or zip).
     - **Step 2:** The distance from the client to each provider is calculated.
     - **Step 3:** Each provider has a pre-assigned rank (lower is better).
