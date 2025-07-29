@@ -17,7 +17,7 @@ def recommend_provider(provider_df, alpha=0.5, beta=0.5):
     df = provider_df.copy()
     df = df[df['Distance (miles)'].notnull() & df['Provider Rank'].notnull()]
     if df.empty:
-        return None, None
+        return None, None   
     # Prioritize preferred providers: filter to preferred if any exist
     preferred_df = df[df['Preferred'] == 1]
     if not preferred_df.empty:
@@ -265,31 +265,32 @@ with tabs[0]:
                     doc.save(buffer)
                     buffer.seek(0)
                     return buffer
-                def get_pdf_bytes(best):
-                    buffer = io.BytesIO()
-                    c = canvas.Canvas(buffer, pagesize=letter)
-                    c.setFont("Helvetica-Bold", 16)
-                    c.drawString(72, 720, "Recommended Provider")
-                    c.setFont("Helvetica", 12)
-                    y = 700
-                    c.drawString(72, y, f"Name: {best['Full Name']}")
-                    y -= 20
-                    c.drawString(72, y, f"Address: {best['Full Address']}")
-                    y -= 20
-                    c.drawString(72, y, f"Phone: {best['Phone 1']}")
-                    y -= 20
-                    c.drawString(72, y, f"Email: {best['Email 1']}")
-                    y -= 20
-                    c.drawString(72, y, f"Specialty: {best['Specialty']}")
-                    y -= 20
-                    if best.get('Preferred', 0) == 1:
-                        c.drawString(72, y, "Preferred Provider")
-                    c.save()
-                    buffer.seek(0)
-                    return buffer
+                # def get_pdf_bytes(best):
+                #     buffer = io.BytesIO()
+                #     c = canvas.Canvas(buffer, pagesize=letter)
+                #     c.setFont("Helvetica-Bold", 16)
+                #     c.drawString(72, 720, "Recommended Provider")
+                #     c.setFont("Helvetica", 12)
+                #     y = 700
+                #     c.drawString(72, y, f"Name: {best['Full Name']}")
+                #     y -= 20
+                #     c.drawString(72, y, f"Address: {best['Full Address']}")
+                #     y -= 20
+                #     c.drawString(72, y, f"Phone: {best['Phone 1']}")
+                #     y -= 20
+                #     c.drawString(72, y, f"Email: {best['Email 1']}")
+                #     y -= 20
+                #     c.drawString(72, y, f"Specialty: {best['Specialty']}")
+                #     y -= 20
+                #     if best.get('Preferred', 0) == 1:
+                #         c.drawString(72, y, "Preferred Provider")
+                #     c.save()
+                #     buffer.seek(0)
+                #     return buffer
                 provider_name = sanitize_filename(str(best['Full Name']))
                 provider_specialty = sanitize_filename(str(best['Specialty']))
-                base_filename = f"Provider_{provider_name}_{provider_specialty}"
+                # base_filename = f"Provider_{provider_name}_{provider_specialty}"
+                base_filename = f"Recommended_Provider_Info"
                 word_bytes = get_word_bytes(best)
                 st.download_button(
                     label="Export as Word",
@@ -297,12 +298,12 @@ with tabs[0]:
                     file_name=f"{base_filename}.docx",
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 )
-                pdf_bytes = get_pdf_bytes(best)
-                st.download_button(
-                    label="Export as PDF",
-                    data=pdf_bytes,
-                    file_name=f"{base_filename}.pdf",
-                    mime="application/pdf"
+                # pdf_bytes = get_pdf_bytes(best)
+                # st.download_button(
+                #     label="Export as PDF",
+                #     data=pdf_bytes,
+                #     file_name=f"{base_filename}.pdf",
+                #     mime="application/pdf"
                 )
                 # --- Rationale for Selection ---
                 with st.expander('Why was this provider selected?', expanded=False):
